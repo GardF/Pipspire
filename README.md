@@ -1,6 +1,7 @@
 # pipspire
-The official Pipspire game developement repository. 
-https://drowsyrook.itch.io/
+The official Pipspire game developement repository: https://drowsyrook.itch.io/
+Filbane på *Gards Thinkpad*:  C:\Users\gardf\dev\Pipspire>
+
 
 ## Scrum metodikk
 - Du kommer konstant til å komme på en backlog av ting du har lyst til å implementere og som du føler trengs å implementere. Skriv de ned og tag de med backlog

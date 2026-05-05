@@ -10,7 +10,7 @@
       body { background:#080615; color:#f7e2bb; font-family:Arial,sans-serif; margin:0; }
       .wrap { display:flex; flex-direction:column; align-items:center; padding:16px; }
       h1 { color:#e8a42b; margin:8px 0; font-weight:normal; }
-      canvas { background:#080615; outline:none; border:1px solid #1a1424; }
+      canvas { background:#080615; border:1px solid #1a1424; }
       #loadingCanvas { display:block; }
       #canvas { display:block; visibility:hidden; }
       footer { color:#615650; font-size:0.85em; margin-top:8px; }
@@ -22,20 +22,19 @@
     <div class="wrap">
       <h1>Pips &mdash; Piptower</h1>
       <canvas id="loadingCanvas" oncontextmenu="event.preventDefault()" width="1280" height="720"></canvas>
-      <canvas id="canvas" oncontextmenu="event.preventDefault()" width="1280" height="720" tabindex="1"></canvas>
+      <canvas id="canvas" oncontextmenu="event.preventDefault()" width="1280" height="720"></canvas>
       <footer>
         <kbd>ENTER</kbd> start &nbsp; <kbd>SPACE</kbd> next phase &nbsp; <kbd>BACKSPACE</kbd> menu &nbsp;
         <button onclick="goFullScreen();">Fullscreen</button>
         <br>
         Built with <a href="https://github.com/Davidobot/love.js">love.js</a>.
-        Click the canvas if keys aren't responding.
       </footer>
     </div>
 
     <script type='text/javascript'>
       function goFullScreen(){
         var c = document.getElementById("canvas");
-        if (c.requestFullScreen)        c.requestFullScreen();
+        if (c.requestFullScreen)            c.requestFullScreen();
         else if (c.webkitRequestFullScreen) c.webkitRequestFullScreen();
         else if (c.mozRequestFullScreen)    c.mozRequestFullScreen();
       }
@@ -51,15 +50,13 @@
         loadingContext.fillText(text, c.width / 2, c.height / 2);
       }
 
-      function focusCanvas() {
-        var c = document.getElementById('canvas');
-        if (c) c.focus();
-      }
-      window.addEventListener('load',   focusCanvas);
-      window.addEventListener('click',  focusCanvas);
+      // Same focus pattern as the default love.js index.html.
+      // SDL2 listens for keys on document/window; do NOT tabindex+focus the
+      // canvas, that pulls focus away from where SDL is listening.
+      window.onload  = function () { window.focus(); };
+      window.onclick = function () { window.focus(); };
 
-      // Prevent the browser from acting on game keys
-      // (8=Backspace, 13=Enter, 32=Space, 37-40=Arrows).
+      // Stop the browser from acting on game keys (8=Bksp, 13=Enter, 32=Space, 37-40=arrows).
       window.addEventListener("keydown", function(e) {
         if ([8, 13, 32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
           e.preventDefault();
@@ -84,7 +81,6 @@
           } else if (Module.remainingDependencies === 0) {
             document.getElementById('loadingCanvas').style.display = 'none';
             document.getElementById('canvas').style.visibility = 'visible';
-            focusCanvas();
           }
         },
         totalDependencies: 0,

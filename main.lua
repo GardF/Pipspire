@@ -1,47 +1,53 @@
-if arg[2] == "debug" then
-    require("lldebugger").start()
-end
+-- Pips / Piptower
+-- Entry point. See CLAUDE.md for project context.
 
+local StateMachine = require("src.core.statemachine")
+
+local states = {
+    menu     = require("src.states.menu"),
+    mt       = require("src.states.mt"),
+    tb       = require("src.states.tb"),
+    pr       = require("src.states.pr"),
+    shop     = require("src.states.shop"),
+    gameover = require("src.states.gameover"),
+}
+
+local sm
 
 function love.load()
-listOfRectangles = {} 
-end
+    -- Pixel art friendly: nearest-neighbour scaling everywhere
+    love.graphics.setDefaultFilter("nearest", "nearest")
+    math.randomseed(os.time())
 
-function createRect()
-    rect = {}
-    rect.x = 100
-    rect.y = 100
-    rect.width = 100
-    rect.height = 70
-    rect.speed = 100
-    table.insert(listOfRectangles,rect)
+    sm = StateMachine.new(states)
+    sm:switch("menu")
 end
-   
 
 function love.update(dt)
-    rect.x = rect.x + rect.speed * dt
+    sm:update(dt)
 end
 
 function love.draw()
-    love.graphics.rectangle("fill",rect.x, rect.y, rect.width, rect.height)
+    sm:draw()
 end
 
+function love.keypressed(key)
+    if key == "escape" then
+        love.event.quit()
+    end
+    sm:keypressed(key)
+end
 
+function love.mousepressed(x, y, button)
+    sm:mousepressed(x, y, button)
+end
 
+function love.mousereleased(x, y, button)
+    sm:mousereleased(x, y, button)
+end
 
-
-
-
-
-
-
-
-local love_errorhandler = love.errorhandler
-
-function love.errorhandler(msg)
-    if lldebugger then
-        error(msg, 2)
-    else
-        return love_errorhandler(msg)
+function love.resize(w, h)
+    if sm.current and sm.current.resize then
+        sm.current:resize(w, h)
     end
 end

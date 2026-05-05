@@ -12,6 +12,25 @@ Krever [LÖVE 2D 11.5](https://love2d.org/).
 love .
 ```
 
+### Kjøre i nettleseren
+
+Mappen `web/` inneholder en ferdigbygd love.js-versjon. Fordi WebAssembly
+krever HTTP (ikke `file://`), må du serve den lokalt:
+
+```bash
+cd web
+python3 -m http.server 8000
+# Åpne http://localhost:8000 i nettleseren
+```
+
+Bygg på nytt etter kodeendringer:
+
+```bash
+npm install -g love.js
+zip -r /tmp/pips.love main.lua conf.lua src
+love.js -c -t "Pips - Piptower" /tmp/pips.love web
+```
+
 ## Mappestruktur
 
 ```

@@ -12,7 +12,11 @@ function love.conf(t)
     t.window.resizable = true
     t.window.vsync    = 1
 
-    -- Disable unused modules to start fast (re-enable as needed)
+    -- Disable unused modules to start fast (re-enable as needed).
+    -- Note: audio/sound are off so love.js doesn't freeze waiting for
+    -- a user-gesture-unlocked AudioContext. Re-enable when sound is added.
+    t.modules.audio   = false
+    t.modules.sound   = false
     t.modules.video   = false
     t.modules.physics = false
 end

@@ -42,8 +42,9 @@ piptower/
 │   ├── core/
 │   │   ├── statemachine.lua  # driver state-flyten
 │   │   ├── camera.lua        # zoom inn/ut mellom TB og PR
-│   │   └── colors.lua        # PEAR36 palett
-│   ├── states/               # én fil per state (sml. sekvensdiagram)
+│   │   ├── colors.lua        # PEAR36 palett
+│   │   └── game.lua          # delt run-state (round, height, pips, money)
+│   ├── states/               # én fil per fase i runden
 │   │   ├── menu.lua
 │   │   ├── mt.lua            # Mexican Train
 │   │   ├── tb.lua            # Tower Building (zoomet inn)
@@ -61,23 +62,28 @@ piptower/
 └── lib/                      # tredjepartsbiblioteker
 ```
 
-## State-flyten
+## Gameloop
+
+MT, TB og PR er ikke separate spill — de er tre faser av samme runde.
+En run består av mange runder:
 
 ```
-menu → mt → tb → pr → shop ─┐
-        ↑                   │
-        └───────────────────┘
-                pr → gameover (når tårnet faller)
+menu → [ MT → TB → PR → shop ] ↻ ... → gameover
+       └── én runde (én sløyfe)
 ```
 
-Hver state er bare en tabell med `enter`, `update`, `draw`, `keypressed`,
+Felles run-state (round, height, pips, money, ...) ligger i
+`src/core/game.lua` og leses/skrives av alle fasene.
+
+Hver state er en tabell med `enter`, `update`, `draw`, `keypressed`,
 `mousepressed`. State-machine forwarder hendelser automatisk.
 
 ## Tastatursnarveier (i skjelett-versjonen)
 
-- `1` / `2` / `3` fra menyen → MT / TB / PR
-- `SPACE` i en state → neste state
-- `BACKSPACE` → tilbake til meny
+- `ENTER` fra menyen → start run
+- `SPACE` → neste fase (MT → TB → PR → shop → MT → ...)
+- `BACKSPACE` (i MT) → avbryt run, tilbake til meny
+- `ENTER` (i shop) → neste runde
 - `ESC` → avslutt
 
 ## Neste steg

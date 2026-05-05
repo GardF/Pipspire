@@ -1,4 +1,5 @@
 local Colors = require("src.core.colors")
+local Game   = require("src.core.game")
 
 local Menu = {}
 
@@ -11,20 +12,25 @@ function Menu:draw()
     local w, h = love.graphics.getDimensions()
 
     love.graphics.setColor(Colors.parchment)
-    love.graphics.printf("PIPS", 0, h * 0.25, w, "center")
+    love.graphics.printf("PIPS", 0, h * 0.22, w, "center")
     love.graphics.setColor(Colors.gold)
-    love.graphics.printf("Piptower", 0, h * 0.32, w, "center")
+    love.graphics.printf("Piptower", 0, h * 0.30, w, "center")
+
+    love.graphics.setColor(Colors.smoke)
+    love.graphics.printf("Mexican Train  ->  Tower Building  ->  Pip Toss  ->  Shop  ->  repeat",
+                         0, h * 0.46, w, "center")
 
     love.graphics.setColor(Colors.bone)
-    love.graphics.printf("[1] Mexican Train   [2] Tower Building   [3] Piprush",
-                         0, h * 0.55, w, "center")
-    love.graphics.printf("[ESC] quit", 0, h * 0.65, w, "center")
+    love.graphics.printf("[ENTER] start run", 0, h * 0.60, w, "center")
+    love.graphics.printf("[ESC] quit",        0, h * 0.66, w, "center")
 end
 
 function Menu:keypressed(key)
-    if key == "1" then self.sm:switch("mt") end
-    if key == "2" then self.sm:switch("tb") end
-    if key == "3" then self.sm:switch("pr") end
+    if key == "return" or key == "kpenter" then
+        Game.newRun()
+        Game.startRound()
+        self.sm:switch("mt")
+    end
 end
 
 return Menu

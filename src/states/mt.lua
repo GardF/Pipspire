@@ -1,7 +1,9 @@
--- State: Mexican Train (MT)
--- Sequence diagram steps 0-2: Place piece -> Opponent places piece -> Finish round.
+-- Phase 1 of the round: Mexican Train.
+-- Player and opponent place dominoes. Pips that don't make it onto a train
+-- get carried over to the Pip Toss in the same round.
 
 local Colors = require("src.core.colors")
+local Game   = require("src.core.game")
 local MT     = require("src.modules.mt")
 
 local State = {}
@@ -20,8 +22,10 @@ function State:draw()
     MT.draw()
 
     love.graphics.setColor(Colors.parchment)
-    love.graphics.print("State: Mexican Train (MT)", 10, 10)
-    love.graphics.print("[SPACE] -> Tower Building   [BACKSPACE] menu", 10, 30)
+    love.graphics.print(string.format("Round %d  -  Phase 1: Mexican Train", Game.round), 10, 10)
+    love.graphics.print(string.format("Unplaced pips so far: %d", Game.pipsRemaining), 10, 30)
+    love.graphics.print("[SPACE] finish round  ->  Tower Building", 10, 50)
+    love.graphics.print("[BACKSPACE] abandon run", 10, 70)
 end
 
 function State:keypressed(key)

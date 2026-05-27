@@ -19,7 +19,7 @@ end
    
 
 function love.update(dt)
-    rect.x = rect.x + rect.speed * dt
+    rect.x = rect.x + rect.speed 
 end
 
 function love.draw()

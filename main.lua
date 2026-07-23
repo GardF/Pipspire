@@ -1,57 +1,24 @@
--- Pips / Piptower
--- Entry point. See CLAUDE.md for project context.
 
-local StateMachine = require("src.core.statemachine")
-
-local states = {
-    menu     = require("src.states.menu"),
-    mt       = require("src.states.mt"),
-    tb       = require("src.states.tb"),
-    pr       = require("src.states.pr"),
-    shop     = require("src.states.shop"),
-    gameover = require("src.states.gameover"),
-}
-
-local sm
 
 function love.load()
-    -- Pixel art friendly: nearest-neighbour scaling everywhere
-    love.graphics.setDefaultFilter("nearest", "nearest")
-    math.randomseed(os.time())
+    
+    Domino = {}
+    Domino.left = 0
+    Domino.right = 0
 
-    sm = StateMachine.new(states)
-    sm:switch("menu")
-end
+    Random_pip_left = love.math.random(0,6)
+    Random_pip_right = love.math.random(0,6)
+    
 
-function love.update(dt)
-<<<<<<< HEAD
-    rect.x = rect.x + rect.speed 
-=======
-    sm:update(dt)
->>>>>>> 88f7b2394237178dc4fc0c98b53af4839f273164
+    Domino.left = Random_pip_left
+    Domino.right = Random_pip_right
+
 end
 
 function love.draw()
-    sm:draw()
-end
+    love.graphics.print("Train", 400, 100)
 
-function love.keypressed(key)
-    if key == "escape" then
-        love.event.quit()
-    end
-    sm:keypressed(key)
-end
+    love.graphics.print(Domino.left, 200, 300)
+    love.graphics.print(Domino.right, 400, 300)
 
-function love.mousepressed(x, y, button)
-    sm:mousepressed(x, y, button)
-end
-
-function love.mousereleased(x, y, button)
-    sm:mousereleased(x, y, button)
-end
-
-function love.resize(w, h)
-    if sm.current and sm.current.resize then
-        sm.current:resize(w, h)
-    end
 end

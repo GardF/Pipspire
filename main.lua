@@ -43,12 +43,9 @@ function love.mousereleased(x, y, button)
 
     local moved_to_train = false
 
-    if over_train and #train.pieces > 0 then
-        local front_piece = train.pieces[#train.pieces]
-
-        if domino.matches(released_piece.piece, front_piece.piece) then
+    if over_train then
+        if train.addPiece(released_piece.piece) then
             hand.removePiece(released_piece)
-            train.addPiece(released_piece.piece, released_piece.w, released_piece.h)
             moved_to_train = true
         end
     end
@@ -72,10 +69,10 @@ function love.load()
     domino.build_lookup()
     domino.build_quads(sheet)
     fonts.load()
+    train.load()
 
     deck.init()
     deck.position(domino.W, domino.H)
-
     hand.centerOnScreen()
     train.center()
 
@@ -83,7 +80,7 @@ function love.load()
         hand.addPiece(deck.draw_random(), domino.W, domino.H)
     end
 
-    train.addPiece(deck.draw_random(), domino.W, domino.H)
+    train.addPiece(deck.draw_random())
 
     draw_button = Button.new(deck.area.x, deck.area.y + domino.H + 15, domino.W, 40, "Draw")
 
@@ -92,12 +89,9 @@ end
 function love.draw()
     board.draw()
     hand.draw()
-    train.draw()
+    train.draw(sheet)
     deck.draw(sheet, domino.quads, fonts.small)
     draw_button:draw(fonts.small)
-    for _, d in ipairs(train.pieces) do
-        love.graphics.draw(sheet, domino.quads[d.piece], d.x, d.y)
-    end
     
     for _, d in ipairs(hand.getPieceList()) do
         love.graphics.draw(sheet, domino.quads[d.piece], d.x, d.y)

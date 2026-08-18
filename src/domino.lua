@@ -1,8 +1,9 @@
 local domino = {}
 
-domino.lookup = {}       -- "low-high" -> indeks (1-28)
-domino.pips = {}         -- indeks -> {low, high}
-domino.quads = {}        -- indeks -> quad
+domino.lookup = {}
+domino.pips = {}
+domino.quads = {}
+domino.half_quads = {}   -- indeks -> { low = quad, high = quad }
 domino.W, domino.H = 50, 100
 
 function domino.build_lookup()
@@ -23,8 +24,17 @@ end
 
 function domino.build_quads(sheet)
     local sheetW, sheetH = sheet:getDimensions()
+    local halfH = domino.H / 2
+
     for i = 0, 27 do
-        domino.quads[i + 1] = love.graphics.newQuad(i * domino.W, 0, domino.W, domino.H, sheetW, sheetH)
+        local idx = i + 1
+        domino.quads[idx] = love.graphics.newQuad(i * domino.W, 0, domino.W, domino.H, sheetW, sheetH)
+
+        -- Antakelse: øverste halvdel = low, nederste halvdel = high. Bytt om hvis dette er feil.
+        domino.half_quads[idx] = {
+            low  = love.graphics.newQuad(i * domino.W, 0, domino.W, halfH, sheetW, sheetH),
+            high = love.graphics.newQuad(i * domino.W, halfH, domino.W, halfH, sheetW, sheetH),
+        }
     end
 end
 
@@ -33,9 +43,29 @@ function domino.get(low, high)
     return domino.lookup[lo .. "-" .. hi]
 end
 
-function domino.matches(index_a, index_b)
-    local a, b = domino.pips[index_a], domino.pips[index_b]
-    return a[1] == b[1] or a[1] == b[2] or a[2] == b[1] or a[2] == b[2]
+function domino.matchesValue(piece_index, value)
+    local p = domino.pips[piece_index]
+    return p[1] == value or p[2] == value
+end
+
+-- Returnerer quaden for halvdelen av piece_index som viser 'value'
+function domino.getHalfQuad(piece_index, value)
+    local p = domino.pips[piece_index]
+    if value == p[1] then
+        return domino.half_quads[piece_index].high
+    else
+        return domino.half_quads[piece_index].low
+    end
+end
+
+
+function domino.getHalfInfo(piece_index, value)
+    local p = domino.pips[piece_index]
+    if value == p[1] then
+        return domino.half_quads[piece_index].low, math.rad(90)
+    else
+        return domino.half_quads[piece_index].high, math.rad(-90)
+    end
 end
 
 return domino
